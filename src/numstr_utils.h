@@ -41,4 +41,19 @@ void * numstr_utils_memcpy(void *destination, const void *source, size_t num);
  */
 void * numstr_utils_memset(void *ptr, int value, size_t num);
 
+/**
+ * @brief Allocate a block of memory that is at least the requested size and return a pointer to it
+ * 
+ * @param size Size of the block, in bytes
+ * @return void* Pointer to the allocated memory, or NULL if the request fails
+ */
+void * numstr_utils_malloc(size_t size);
+
+/**
+ * @brief Deallocate a block of memory which was previously allocated by a call to numstr_utils_malloc()
+ * 
+ * @param ptr Pointer to a block of memory previously allocated with numstr_utils_malloc()
+ */
+void numstr_utils_free(void *ptr);
+
 #endif /* #ifndef _NUMSTR_UTILS_H_ */

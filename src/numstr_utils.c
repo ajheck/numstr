@@ -13,6 +13,7 @@
 
 #if  NUMSTR_FEATURE_ENABLE == NUMSTR_UTILS_USE_STDLIB
 #include "string.h"
+#include "stdlib.h"
 #endif
 
 void *numstr_utils_memcpy(void *destination, const void *source, size_t num) {
@@ -29,7 +30,6 @@ void *numstr_utils_memcpy(void *destination, const void *source, size_t num) {
 }
 
 void * numstr_utils_memset(void *ptr, int value, size_t num) {
-    
 #if  NUMSTR_FEATURE_ENABLE == NUMSTR_UTILS_USE_STDLIB
     return memset(ptr, value, num);
 #else
@@ -40,5 +40,21 @@ void * numstr_utils_memset(void *ptr, int value, size_t num) {
         ((uint8_t *)ptr)[i] = b;
     }    
     return ptr;
+#endif
+}
+
+void * numstr_utils_malloc(size_t size) {
+#if  NUMSTR_FEATURE_ENABLE == NUMSTR_UTILS_USE_STDLIB
+    return malloc(size);
+#else
+#error "No default malloc() implementation is provided by numstr; please implement one"
+#endif
+}
+
+void numstr_utils_free(void *ptr) {
+#if  NUMSTR_FEATURE_ENABLE == NUMSTR_UTILS_USE_STDLIB
+    free(ptr);
+#else
+#error "No default free() implementation is provided by numstr; please implement one"
 #endif
 }
