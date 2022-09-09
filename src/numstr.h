@@ -10,7 +10,11 @@
  */
 
 #ifndef _NUMSTR_H_
+#define _NUMSTR_H_
 
 #include "stdint.h"
+
+#define NUMSTR_FEATURE_ENABLE (1)
+#define NUMSTR_FEATURE_DISABLE (2)
 
 #endif /* #ifndef _NUMSTR_H_ */
