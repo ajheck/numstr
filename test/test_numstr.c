@@ -42,6 +42,12 @@ MU_TEST_SUITE(numstr_utils_malloc_and_numstr_utils_free_suite) {
 /************************* END numster_utils.c TESTS *************************/
 
 
+/************************* BEGIN numster_internal.c TESTS *************************/
+
+
+/************************* END numster_internal.c TESTS *************************/
+
+
 /************************* BEGIN numstr.c TESTS *************************/
 
 
@@ -49,9 +55,15 @@ MU_TEST_SUITE(numstr_utils_malloc_and_numstr_utils_free_suite) {
 /************************* END numstr.c TESTS *************************/
 
 int main(int argc, char *argv[]) {
+    // numster_utils.c tests
 	MU_RUN_SUITE(numstr_utils_memcpy_suite);
 	MU_RUN_SUITE(numstr_utils_memset_suite);
 	MU_RUN_SUITE(numstr_utils_malloc_and_numstr_utils_free_suite);
+
+    // numster_internal.c tests
+
+    // numstr.c tests
+    
 	MU_REPORT();
 	return MU_EXIT_CODE;
 }
