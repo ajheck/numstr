@@ -26,10 +26,8 @@ numstr_ret_t nsi_str_is_valid(numstr_t *num)
 {
     int i;
 
-    i = num->str_size;
-
     // First, look for at least 1 null terminator
-    for(i = num->str_size;
+    for(i = num->str_size - 1;
         i >= 0 && num->str[i] != '\0';
         --i);
 
