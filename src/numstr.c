@@ -20,3 +20,20 @@ numstr_ret_t numstr_fill_from_str(numstr_t *num, char* str, size_t str_size, uin
 
     return NUMSTR_RET_SUCCESS;
 }
+
+numstr_ret_t numstr_fill_as_empty(numstr_t *num, char *str, size_t str_size) {
+    numstr_ret_t retcode;
+    if(NULL == num || NULL == str) {
+        return NUMSTR_RET_ERR_NULL_PTR;
+    }
+    
+    num->base = 0;
+    num->str = str;
+    num->str_size = str_size;
+
+    // make the first and last char null
+    num->str[0] = '\0';
+    num->str[str_size - 1] = '\0';
+
+    return NUMSTR_RET_SUCCESS;
+}

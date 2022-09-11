@@ -114,11 +114,11 @@ MU_TEST_SUITE(nsi_char_value_conversion_suite)
 
 /************************* BEGIN numstr.c TESTS *************************/
 
-MU_TEST_SUITE(numstr_fill_from_str_works_nominally)
+MU_TEST(numstr_fill_from_str_works_nominally)
 {
     char *hexString = "FEEDF00D";
     uint8_t base = 16;
-    size_t strSize = strlen(hexString);
+    size_t strSize = strlen(hexString) + 1;
     numstr_t testNum;
 
     mu_assert(NUMSTR_RET_SUCCESS == numstr_fill_from_str(&testNum, hexString, strSize, base), "Unexpected err when filling numstr from string");
@@ -127,10 +127,10 @@ MU_TEST_SUITE(numstr_fill_from_str_works_nominally)
     mu_assert(testNum.str == hexString, "Failed to set numstr_t string as expected");
 }
 
-MU_TEST_SUITE(numstr_fill_from_str_fails_on_null_ptrs) {
+MU_TEST(numstr_fill_from_str_fails_on_null_ptrs) {
     char *hexString = "FEEDF00D";
     uint8_t base = 16;
-    size_t strSize = strlen(hexString);
+    size_t strSize = strlen(hexString) + 1;
     numstr_t testNum;
 
     // Test failure when no string is provided
@@ -140,10 +140,10 @@ MU_TEST_SUITE(numstr_fill_from_str_fails_on_null_ptrs) {
     mu_assert(NUMSTR_RET_ERR_NULL_PTR == numstr_fill_from_str(NULL, hexString, strSize, base), "Unexpected err when attempting to fill null numstr pointer");
 }
 
-MU_TEST_SUITE(numstr_fill_from_str_fails_on_invalid_params) {
+MU_TEST(numstr_fill_from_str_fails_on_invalid_params) {
     char *hexString = "FEEDF00D";
     uint8_t base = 16;
-    size_t strSize = strlen(hexString);
+    size_t strSize = strlen(hexString) + 1;
     numstr_t testNum;
 
     // Test failure when no null character is provided in the string buffer
@@ -166,6 +166,35 @@ MU_TEST_SUITE(numstr_fill_from_str_suite)
     MU_RUN_TEST(numstr_fill_from_str_fails_on_invalid_params);
 }
 
+MU_TEST(numstr_fill_as_empty_works_nominally) {
+    char buff[4];
+    memset(buff, 'x', sizeof(buff));
+    char expectedBuff[4] = { '\0', 'x', 'x', '\0' };
+    size_t strSize = sizeof(buff);
+    numstr_t testNum;
+
+    mu_assert(NUMSTR_RET_SUCCESS == numstr_fill_as_empty(&testNum, buff, strSize), "Unexpected err when filling numstr as empty");
+    mu_assert_int_eq(0, testNum.base);
+    mu_assert_int_eq(strSize, testNum.str_size);
+    mu_assert(testNum.str == buff, "Failed to set numstr_t string as expected");
+    mu_assert_mem_eq(expectedBuff, testNum.str, sizeof(expectedBuff));
+}
+
+MU_TEST(numstr_fill_as_empty_fails_on_null_ptrs) {
+    char buff[4];
+    size_t strSize = sizeof(buff);
+    numstr_t testNum;
+
+    mu_assert(NUMSTR_RET_ERR_NULL_PTR == numstr_fill_as_empty(NULL, buff, strSize), "Unexpected err when passing NULL numstr ptr");
+    mu_assert(NUMSTR_RET_ERR_NULL_PTR == numstr_fill_as_empty(&testNum, NULL, strSize), "Unexpected err when passing NULL buffer ptr");
+}
+
+MU_TEST_SUITE(numstr_fill_as_empty_suite)
+{
+    MU_RUN_TEST(numstr_fill_as_empty_works_nominally);
+    MU_RUN_TEST(numstr_fill_as_empty_fails_on_null_ptrs);
+}
+
 /************************* END numstr.c TESTS *************************/
 
 int main(int argc, char *argv[])
@@ -180,6 +209,7 @@ int main(int argc, char *argv[])
 
     // numstr.c tests
     MU_RUN_SUITE(numstr_fill_from_str_suite);
+    MU_RUN_SUITE(numstr_fill_as_empty_suite);
 
     MU_REPORT();
     return MU_EXIT_CODE;
