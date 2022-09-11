@@ -15,6 +15,12 @@
 #include "numstr.h"
 #include "stdbool.h"
 
+#define NSI_RET_ON_TRUE(func, retcode) do { if ((func)) { return (retcode); }  } while(0)
+
+#define NSI_RET_ON_FALSE(func, retcode) NSI_RET_ON_TRUE(!(func), (retcode))
+
+#define NSI_RET_ON_ERR(func) do { numstr_ret_t v = (func); if ( v != NUMSTR_RET_SUCCESS ) { return v; }  } while(0)
+
 /**
  * @brief Check if a base is supported by the numstr library
  * 
