@@ -102,9 +102,13 @@ MU_TEST(nsi_value_to_char_test_all_int_values)
         {
             expectedChar = i + 'A' - 10;
         }
-        else if (i >= 36 && i <= 31)
+        else if (i >= 36 && i <= 61)
         {
             expectedChar = i + 'a' - 36;
+        }
+        else
+        {
+            expectedChar = '\0';
         }
         mu_assert_int_eq(expectedChar, nsi_value_to_char(i));
     }
