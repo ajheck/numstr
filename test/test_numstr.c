@@ -68,9 +68,13 @@ MU_TEST(nsi_char_to_value_test_all_byte_values)
         {
             expectedValue = c - '0';
         }
-        else if (c >= 'A' && c <= 'z')
+        else if (c >= 'A' && c <= 'Z')
         {
             expectedValue = c - 'A' + 10;
+        }
+        else if (c >= 'a' && c <= 'z')
+        {
+            expectedValue = c - 'a' + 36;
         }
         else
         {
@@ -96,9 +100,13 @@ MU_TEST(nsi_value_to_char_test_all_int_values)
         {
             expectedChar = i + '0';
         }
-        else if (i >= 10 && i <= 62)
+        else if (i >= 10 && i <= 35)
         {
             expectedChar = i + 'A' - 10;
+        }
+        else if (i >= 36 && i <= 61)
+        {
+            expectedChar = i + 'a' - 36;
         }
         else
         {
