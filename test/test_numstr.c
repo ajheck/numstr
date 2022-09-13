@@ -3,6 +3,8 @@
 #include "../src/numstr_utils.h"
 #include "../src/numstr_internal.h"
 
+#define ARR_ENTRY_COUNT(arr) (sizeof(arr) / sizeof((arr)[0]))
+
 /************************* BEGIN numster_utils.c TESTS *************************/
 
 MU_TEST(numstr_utils_memcpy_copies_as_expected)
@@ -135,7 +137,8 @@ MU_TEST(numstr_fill_from_str_works_nominally)
     mu_assert(testNum.str == hexString, "Failed to set numstr_t string as expected");
 }
 
-MU_TEST(numstr_fill_from_str_fails_on_null_ptrs) {
+MU_TEST(numstr_fill_from_str_fails_on_null_ptrs)
+{
     char *hexString = "FEEDF00D";
     uint8_t base = 16;
     size_t strSize = strlen(hexString) + 1;
@@ -148,7 +151,8 @@ MU_TEST(numstr_fill_from_str_fails_on_null_ptrs) {
     mu_assert(NUMSTR_RET_ERR_NULL_PTR == numstr_fill_from_str(NULL, hexString, strSize, base), "Unexpected err when attempting to fill null numstr pointer");
 }
 
-MU_TEST(numstr_fill_from_str_fails_on_invalid_params) {
+MU_TEST(numstr_fill_from_str_fails_on_invalid_params)
+{
     char *hexString = "FEEDF00D";
     uint8_t base = 16;
     size_t strSize = strlen(hexString) + 1;
@@ -161,7 +165,6 @@ MU_TEST(numstr_fill_from_str_fails_on_invalid_params) {
     base = 15;
     mu_assert(NUMSTR_RET_ERR_INVALID_CHAR_FOR_BASE == numstr_fill_from_str(&testNum, hexString, strSize, base), "Unexpected err when filling numstr from string with invalid chars");
 
-    
     // Test failure when invalid base is passed in
     base = 123;
     mu_assert(NUMSTR_RET_ERR_INVALID_BASE == numstr_fill_from_str(&testNum, hexString, strSize, base), "Unexpected err when using invalid base");
@@ -174,10 +177,11 @@ MU_TEST_SUITE(numstr_fill_from_str_suite)
     MU_RUN_TEST(numstr_fill_from_str_fails_on_invalid_params);
 }
 
-MU_TEST(numstr_fill_as_empty_works_nominally) {
+MU_TEST(numstr_fill_as_empty_works_nominally)
+{
     char buff[4];
     memset(buff, 'x', sizeof(buff));
-    char expectedBuff[4] = { '\0', 'x', 'x', '\0' };
+    char expectedBuff[4] = {'\0', 'x', 'x', '\0'};
     size_t strSize = sizeof(buff);
     numstr_t testNum;
 
@@ -188,7 +192,8 @@ MU_TEST(numstr_fill_as_empty_works_nominally) {
     mu_assert_mem_eq(expectedBuff, testNum.str, sizeof(expectedBuff));
 }
 
-MU_TEST(numstr_fill_as_empty_fails_on_null_ptrs) {
+MU_TEST(numstr_fill_as_empty_fails_on_null_ptrs)
+{
     char buff[4];
     size_t strSize = sizeof(buff);
     numstr_t testNum;
@@ -201,6 +206,63 @@ MU_TEST_SUITE(numstr_fill_as_empty_suite)
 {
     MU_RUN_TEST(numstr_fill_as_empty_works_nominally);
     MU_RUN_TEST(numstr_fill_as_empty_fails_on_null_ptrs);
+}
+
+typedef struct
+{
+    char *numeric_string;
+    uint8_t base;
+    int divisor;
+    char *expected_string;
+    int expected_remainder
+} numstr_divide_int_suite_works_nominally_test_case_t;
+
+MU_TEST(numstr_divide_int_suite_works_nominally)
+{
+
+    numstr_divide_int_suite_works_nominally_test_case_t test_cases[] = {
+        {
+            .numeric_string = "101",
+            .base = 10,
+            .divisor = 4,
+            .expected_string = "25",
+            .expected_remainder = 1,
+        },
+        {
+            .numeric_string = "123456789ABCDEF",
+            .base = 16,
+            .divisor = 987654321,
+            .expected_string = "4F2A32C",
+            .expected_remainder = 326573187,
+        },
+        {
+            .numeric_string = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+            .base = 62,
+            .divisor = 1,
+            .expected_string = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+            .expected_remainder = 0,
+        },
+    };
+
+    for (int i = 0; i < ARR_ENTRY_COUNT(test_cases); ++i)
+    {
+        numstr_divide_int_suite_works_nominally_test_case_t *tc;
+        numstr_t num;
+        numstr_t result;
+        char result_buff[256];
+        int remainder;        
+        tc = &test_cases[i];
+        mu_assert(NUMSTR_RET_SUCCESS == numstr_fill_from_str(&num, tc->numeric_string, strlen(tc->numeric_string) + 1, tc->base), "Unexpected error when converting from string");
+        mu_assert(NUMSTR_RET_SUCCESS == numstr_fill_as_empty(&result, result_buff, sizeof(result_buff)), "Unexpected error when filling empty");
+        mu_assert(NUMSTR_RET_SUCCESS == numstr_divide_int(&num, tc->divisor, &result, &remainder), "Unexpected error when dividing");
+        mu_assert_string_eq(tc->expected_string, result.str);
+        mu_assert_int_eq(tc->expected_remainder, remainder);
+    }
+}
+
+MU_TEST_SUITE(numstr_divide_int_suite)
+{
+    MU_RUN_TEST(numstr_divide_int_suite_works_nominally);
 }
 
 /************************* END numstr.c TESTS *************************/
@@ -218,6 +280,7 @@ int main(int argc, char *argv[])
     // numstr.c tests
     MU_RUN_SUITE(numstr_fill_from_str_suite);
     MU_RUN_SUITE(numstr_fill_as_empty_suite);
+    MU_RUN_SUITE(numstr_divide_int_suite);
 
     MU_REPORT();
     return MU_EXIT_CODE;
