@@ -221,7 +221,7 @@ MU_TEST(numstr_divide_int_suite_works_nominally)
 {
 
     numstr_divide_int_suite_works_nominally_test_case_t test_cases[] = {
-        /*{
+        {
             .numeric_string = "101",
             .base = 10,
             .divisor = 4,
@@ -234,7 +234,7 @@ MU_TEST(numstr_divide_int_suite_works_nominally)
             .divisor = 987654321,
             .expected_string = "4F2A32C",
             .expected_remainder = 326573187,
-        },*/
+        },
         {
             .numeric_string = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
             .base = 62,
