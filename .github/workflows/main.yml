@@ -27,6 +27,6 @@ jobs:
     - name: Run script file
       # Runs a set of commands using the runners shell
       run: |
-         chmod +x $GITHUB_WORKSPACE/ci/ci.sh
-         $GITHUB_WORKSPACE/ci/ci.sh
+         chmod +x ci/ci.sh
+         ci/ci.sh
       shell: bash
