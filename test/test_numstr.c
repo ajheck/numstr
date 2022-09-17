@@ -214,8 +214,8 @@ typedef struct
     uint8_t base;
     int divisor;
     char *expected_string;
-    int expected_remainder
-} numstr_divide_int_suite_works_nominally_test_case_t;
+    int expected_remainder;
+}numstr_divide_int_suite_works_nominally_test_case_t;
 
 MU_TEST(numstr_divide_int_suite_works_nominally)
 {
